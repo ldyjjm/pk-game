@@ -146,7 +146,7 @@
   cursor:pointer;
 }
 .add-ques-item-sel-inner-active .add-ques-item-sel-txt{
-  background:#6 
+  background:#6fa8dc;
   color:#fff;
 }
 .add-ques-item-sel-wrap .ant-input {
@@ -163,11 +163,19 @@ textarea:focus-visible {
 
 }
 .answer-no-data {
-
+  width:100%;
+  height:100%;
+  position:relative;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex-direction:column;
+  font-size:56px;
 }
 .answer-no-data-txt {
   color:#f00;
-  margin-bottom:20px;
+  font-size:20px;
+  margin-top:20px;
 }
 
 .answer-wrap {
@@ -178,8 +186,6 @@ textarea:focus-visible {
   right:0;
   bottom:0;
   top:0;
-  border:2px solid red;
- 
 }
 .answer-clock-wrap {
   display:flex;
@@ -187,7 +193,6 @@ textarea:focus-visible {
   justify-content:center;
   width:100%;
   height:100%;
-  border:2px solid blue;
 }
 .answer-clock {
    font-size:48px;
@@ -223,7 +228,7 @@ textarea:focus-visible {
   cursor:pointer;
 }
 .question-cxt-option-item-wrong {
-  background:1px solid #f00;
+  background:#f00;
   padding:8px 12px;
   margin:10px;
   border-radius:4px;
@@ -244,4 +249,63 @@ textarea:focus-visible {
 }
 .question-cxt-option-inner {
   flex:1;
+}
+
+.question-res-wrap {
+  width:100%;
+  height:100%;
+  display:flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position:relative;
+}
+.question-res-btn {
+  position:absolute;
+  right:10px;
+  top:10px;
+  cursor:pointer;
+  font-size:24px;
+}
+.question-res-header {
+  margin-bottom:20px;
+  font-size:24px;
+  font-weight:bold;
+}
+.question-res-flag-wrap {
+ display:flex;
+}
+.question-res-correct {
+  width:30px;
+  height:30px;
+  border-radius:50%;
+  background:#00ff00;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  margin:5px;
+  color:#fff;
+}
+.question-res-wrong {
+  width:30px;
+  height:30px;
+  border-radius:50%;
+  background:#f00;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  margin:5px;
+  color:#fff;
+}
+.question-res-flag {
+  width:14px;
+  height:14px;
+  margin:0 10px;
+  display:inline-block;
+}
+
+.question-list {
+  display:flex;
+  padding:20px 40px;
+  flex-flow: wrap;
 }

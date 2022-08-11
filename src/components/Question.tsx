@@ -3,8 +3,7 @@ import { FC } from "react";
 
 import { QuesItem } from './constant';
 import { convertOptions } from './utils';
-
-
+import { Result } from './Result';
 
 export interface QuestionProps {
   goBack:()=>void,
@@ -18,70 +17,66 @@ export const Question: FC<QuestionProps> = ({goBack,lists}) => {
 
   const [currentAns,setCurrentAns] = useState<number>(-1);
  
-  let temp:number = -1;
-  const handleChecked = (idx:number)=>{
+  const [score,setScore] = useState<boolean[]>([]);
+  const handleChecked = (item:QuesItem,idx:number)=>{
     setActive(true);
-    temp = idx;
+    if(item.answer === idx){
+      setScore([...score,true]);
+    }else{
+      setScore([...score,false]);
+    }
     setCurrentAns(idx);
   }
 
   useEffect(()=>{
     if(active){
        setTimeout(()=>{
-       // setCurrentAns(temp);
         setActive(false);
-       },2000);
-       console.log('--美滋滋--',active);
+        setTimeout(()=>{
+            setCurrent(pre=>pre+1);
+            setCurrentAns(-1);
+        },2000)
+       },800);
     }
-    console.log('-wrap-美滋滋--',active,currentAns);
   },[active])
  
   return (
   <div className="question-wrap">
-    <div className="question-cxt-wrap">
     {
-      lists.length > 0 && lists.map((item,idx:number)=>(
-        current === idx && <div className="question-cxt-item" key={`${item.topic}-${idx}`}>
-            <div className="question-cxt-title">{idx+1}{'.'}{item.topic}</div>
-            <div className="question-cxt-option">
-                {
-                    item.options?.length > 0 && item.options.map((option:string,oIdx:number)=>(
-                        <div className={ 
-                            active ? (
-                                currentAns === oIdx ? "question-cxt-option-item-active":"question-cxt-option-item"
-                            ):(
-                                currentAns === -1  ? "question-cxt-option-item":(
-                                    item.answer === oIdx ? "question-cxt-option-item-correct":"question-cxt-option-item-wrong"
-                                )
-                                
-                            )
-                            // !active && currentAns === -1 ? "question-cxt-option-item":(
-                            //     active ? (currentAns === oIdx ?(
-                            //         "question-cxt-option-item-active"
-                            //     ):("question-cxt-option-item")):(
-                            //         currentAns === item.answer && currentAns === oIdx ? "question-cxt-option-item-correct":"question-cxt-option-item-wrong"
-                            //     )
-                            // )
-                        //     active ? (
-                        //     currentAns === oIdx ? "question-cxt-option-item-active":"question-cxt-option-item"
-                        // ):(
-                        //     currentAns === item.answer ? "question-cxt-option-item-correct":
-                        //     (currentAns === -1 ? "question-cxt-option-item":"question-cxt-option-item-wrong")
-                        // )
-
-                        } key={`${option}-${oIdx}`} onClick={()=>handleChecked(oIdx)}>
-                            <>
-                            <div className="question-cxt-option-sel">{convertOptions(oIdx)}{'.'}</div>
-                            <div className="question-cxt-option-inner">{option}</div>
-                            </>
-                        </div>
-                    ))
-                }
+        current !== lists.length ? (
+            <div className="question-cxt-wrap">
+            {
+              lists.length > 0 && lists.map((item,idx:number)=>(
+                current === idx && <div className="question-cxt-item" key={`${item.topic}-${idx}`}>
+                    <div className="question-cxt-title">{idx+1}{'.'}{item.topic}</div>
+                    <div className="question-cxt-option">
+                        {
+                            item.options?.length > 0 && item.options.map((option:string,oIdx:number)=>(
+                                <div className={ 
+                                    active ? (
+                                        currentAns === oIdx ? "question-cxt-option-item-active":"question-cxt-option-item"
+                                    ):(
+                                        currentAns === -1  ? "question-cxt-option-item":(
+                                            item.answer === oIdx ? "question-cxt-option-item-correct":"question-cxt-option-item-wrong"
+                                        )  
+                                    )
+                                } key={`${option}-${oIdx}`} onClick={()=>handleChecked(item,oIdx)}>
+                                    <>
+                                    <div className="question-cxt-option-sel">{convertOptions(oIdx)}{'.'}</div>
+                                    <div className="question-cxt-option-inner">{option}</div>
+                                    </>
+                                </div>
+                            ))
+                        }
+                    </div>
+                </div>
+              ))
+            }
             </div>
-        </div>
-      ))
+        ):(
+        <Result lists={score} goBack={goBack} />
+        )
     }
-    </div>
   </div>
   );
 };
