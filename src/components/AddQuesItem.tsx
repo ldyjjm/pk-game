@@ -78,9 +78,9 @@ export const AddQuesItem: FC<AddQuesProps> = ({lists,saveData,checkedNull,clearV
           }
           
         </div>
-        {
+        {/* {
           options.length >2 && <MinusCircleTwoTone className="item-sel-btn" onClick={()=>removeSel(index)}/>
-        }
+        } */}
       </div>
       ))
     }

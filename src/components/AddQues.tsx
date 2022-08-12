@@ -88,7 +88,7 @@ const continueAdd = ()=>{
 // 最多只能添加5个题目
 const [limit,setLimit] = useState<boolean>(true);
 useEffect(()=>{
-  if(allItemData.length === 5){
+  if(allItemData.length === 4){
     setLimit(false);
   }
 },[allItemData])
@@ -126,11 +126,11 @@ const finishAdd = ()=>{
           选项
           <span className="item-tooltip">点击选项字母，设为正确答案</span>
           </div>
-          <div className="item-sel-txt">
+          {/* <div className="item-sel-txt">
             {
               allowAdd && <PlusCircleTwoTone className="item-sel-btn" onClick={addSel} />
             }
-          </div>
+          </div> */}
         </div>
         <AddQuesItem lists={lists} saveData={saveOptions} clearVal={clearVal} checkedNull={checkedNull}/>
     </div> 

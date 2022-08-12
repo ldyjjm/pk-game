@@ -17,15 +17,15 @@ import { Monitor } from './Monitor';
 export interface SyncState {
   studentId: MemberIDType | null;
   teacherId: MemberIDType | null;
-  questionLists:QuesItem[],
-  answerLists:number[]
+  questionLists:QuesItem[];
+  answerLists:number[];
+  mode:number;
+  restartStatus:boolean;
 }
 
 export interface AppProps {
   context: AppContext;
 }
-
-
 
 export function App({ context }: AppProps) {
 
@@ -36,7 +36,9 @@ export function App({ context }: AppProps) {
     teacherId:null,
     studentId:null,
     questionLists:[],
-    answerLists:[]
+    answerLists:[],
+    mode:ModeType.Default,
+    restartStatus:false
   })
  )
  const memberID = useMemberID(context);
@@ -49,8 +51,7 @@ export function App({ context }: AppProps) {
   return false
 },[syncState.questionLists])
  
- const isShowWaiting = useMemo(() => {
-  console.log(syncState,isEntering,syncState.teacherId === memberID && syncState.studentId === memberID && !isEntering);
+const isShowWaiting = useMemo(() => {
   if (syncState.studentId === memberID && !syncState.teacherId) {
     return true;
   }
@@ -63,13 +64,12 @@ export function App({ context }: AppProps) {
   return false;
 }, [syncState.teacherId, syncState.studentId, memberID,isEntering]);
 
- const [mode,setMode] = useState<number>(ModeType.Default);
 
  const login = ()=>{
   if (!syncState.studentId) {
     setSyncState({ studentId: memberID });
   } else if (!syncState.teacherId) {
-    setSyncState({ teacherId: memberID });
+    setSyncState({ teacherId: memberID,mode:ModeType.Input });
   }
  }
 
@@ -86,45 +86,95 @@ export function App({ context }: AppProps) {
 const finishedAdd = (lists:QuesItem[])=>{
   const len = lists.length;
   setSyncState({ questionLists: lists });
-  // 为答案设置默认值
-  const res = [];
-  for(let i = 0;i<len;i++){
-   res.push(-1);
-  }
-  setSyncState({ answerLists: res });
 }
 
 const collectAnswer = (lists:number[])=>{
-  const len = syncState.answerLists.length;
-  const res = [...lists,syncState.answerLists].slice(0,len);
-  console.log('--collectAnswer-answerLists-',res);
+  const res = [...lists];
   setSyncState({ answerLists: res });
 }
 
+// const [syncState.restartStatus,setRestartStatus] = useState<boolean>(false);
+
+const isRestarting = useMemo(()=>{
+  if(!!syncState.teacherId  && !!syncState.studentId && !!syncState.questionLists.length && 
+    !!syncState.answerLists.length && (syncState.questionLists.length === syncState.answerLists.length)){
+       return true;
+  }
+  return false;
+},[syncState.teacherId,syncState.studentId,syncState.questionLists,syncState.answerLists])
+
+const goBack = ()=>{
+  setSyncState({ restartStatus:true });
+}
+
+const restart = ()=>{
+  setSyncState({ answerLists: [],questionLists:[],restartStatus:false});
+  if(syncState.teacherId === memberID){
+    setSyncState({ mode:ModeType.Input });
+  }
+}
+
+const isShowAddQuesBtn = useMemo(()=>{
+if(syncState.teacherId === memberID && !isEntering){
+return true;
+}
+return false;
+},[syncState.teacherId, memberID,isEntering])
+
+const isShowRestartBtn = useMemo(()=>{
+  if(isRestarting && syncState.restartStatus){
+    return true;
+  }
+  return false;
+},[isRestarting,syncState.restartStatus])
+
+const isShowWaitingCondition = useMemo(()=>{
+  if(!syncState.restartStatus && isShowWaiting){
+    return true;
+  }
+  return false;
+},[syncState.restartStatus,isShowWaiting])
+
+const isShowAddQuesCondition = useMemo(()=>{
+  if(!syncState.restartStatus &&  (syncState.mode === ModeType.Input) && (syncState.teacherId === memberID) && !isEntering    ) return true;
+  return false;
+},[syncState.restartStatus,syncState.mode,syncState.teacherId,memberID,isEntering])
+
+const isShowMonitorCondition = useMemo(()=>{
+  if(!syncState.restartStatus && syncState.teacherId === memberID  && isEntering) return true;
+  return false;
+},[syncState.restartStatus,syncState.teacherId,memberID,isEntering])
+
+const isShowAnswerCondition = useMemo(()=>{
+  if(!syncState.restartStatus && syncState.studentId === memberID && isEntering) return true;
+  return false;
+},[syncState.restartStatus,syncState.studentId,memberID,isEntering])
 
   return (
   <div className="questionwrap">
      {
-      mode === ModeType.Default && (
+      syncState.mode === ModeType.Default && (
         <>
-          {isShowLogin && <div className="common-btn" onClick={login}>你问我答</div>}
-          {syncState.teacherId === memberID && <div className="common-btn" onClick={()=>setMode(ModeType.Input)}>添加题目</div>}
+          { isShowLogin && <div className="common-btn" onClick={login}>你问我答</div>}
+          { isShowAddQuesBtn && <div className="common-btn" onClick={()=>setSyncState({ mode: ModeType.Input })}>添加题目</div>}
         </>
       )
     }
+    { isShowRestartBtn && <div className="common-btn" onClick={restart}>重新开始</div>}
     {
-      isShowWaiting && <Waiting />
+      isShowWaitingCondition && <Waiting />
     }
     {
-      mode === ModeType.Input && !isEntering && (<AddQues goBack={finishedAdd}/>)
+      isShowAddQuesCondition && (<AddQues goBack={finishedAdd}/>)
     } 
     {
-      syncState.teacherId === memberID  && isEntering && <Monitor lists={syncState.questionLists} anLists={syncState.answerLists} goBack={()=>setMode(ModeType.Default)} />
+      isShowMonitorCondition && <Monitor lists={syncState.questionLists} anLists={syncState.answerLists} 
+      goBack={goBack} />
     }
     {
-      syncState.studentId === memberID && isEntering && (
+      isShowAnswerCondition && (
       <Answer data={syncState.questionLists} handleChecked={collectAnswer}
-        goBack={()=>setMode(ModeType.Default)}/>)
+        goBack={goBack}/>)
     }
   </div>  
   ) 

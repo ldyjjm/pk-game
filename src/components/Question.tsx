@@ -23,7 +23,7 @@ export const Question: FC<QuestionProps> = ({goBack,lists,chooseAnswer}) => {
 
   const handleChecked = (item:QuesItem,idx:number)=>{
     setActive(true);
-    const anLists = [...answerLists,idx]
+    const anLists = [...answerLists,idx];
     setAnswerLists(anLists);
     chooseAnswer(anLists);
     if(item.answer === idx){

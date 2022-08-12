@@ -2,7 +2,7 @@ import React,{ useEffect,useState } from "react";
 import { FC } from "react";
 
 import {
-  HomeTwoTone,FrownTwoTone
+  HomeTwoTone
 } from '@ant-design/icons';
 import { QuesItem } from './constant';
 import { convertOptions } from './utils';
@@ -14,17 +14,17 @@ export interface MonitorProps {
 }
 
 export const Monitor: FC<MonitorProps> = ({goBack,lists,anLists}) => {
-  const [score,setScore] = useState<number>(0)
+  const [score,setScore] = useState<number>(0);
   useEffect(()=>{
-    if(lists.length && anLists.length){
+    if(!!lists.length && !!anLists.length && (lists.length === anLists.length)){
       let count = 0,len = lists.length;
       lists.map((item,idx)=>{
         if(item.answer === anLists[idx]){
             count += 1;
         }
       })
-      const temp = Math.floor(count/len)*100;
-      setScore(temp);
+      const temp = Number((count/len)*100).toFixed(0);
+      setScore(Number(temp));
     }
   },[lists,anLists])
   return (
@@ -42,7 +42,7 @@ export const Monitor: FC<MonitorProps> = ({goBack,lists,anLists}) => {
         lists && lists.length>0 && lists.map((item,idx)=>(
             <div className="monitor-table-item" key={`${item.topic}-${idx}`}>
              <div className="monitor-title">{idx+1}{'.'}{item.topic}</div>
-             <div className="monitor-ans bRight">{ anLists[idx] != -1? convertOptions(anLists[idx]):''}</div>
+             <div className="monitor-ans bRight">{ anLists[idx]!==undefined? convertOptions(anLists[idx]):''}</div>
              <div className="monitor-ans">{convertOptions(item.answer)}</div>
             </div>
         ))
