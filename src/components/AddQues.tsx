@@ -13,7 +13,7 @@ const { TextArea } = Input;
 import { AddQuesItem } from './AddQuesItem';
 
 export interface AddQuesProps {
-  goBack:()=>void
+  goBack:(lists:QuesItem[])=>void
 }
 
 export const AddQues: FC<AddQuesProps> = ({goBack}) => {
@@ -85,19 +85,18 @@ const continueAdd = ()=>{
     init();
   }
 }
+// 最多只能添加5个题目
+const [limit,setLimit] = useState<boolean>(true);
+useEffect(()=>{
+  if(allItemData.length === 5){
+    setLimit(false);
+  }
+},[allItemData])
 // 确定
 const finishAdd = ()=>{
   if(checkedOptions()){
     const data = [...allItemData,currentItemData];
-    const storage = localStorage.getItem('question');
-    let res = [];
-    if(storage){
-      res = [...JSON.parse(storage),...data]
-    }else{
-      res = [...data]
-    }
-    localStorage.setItem('question',JSON.stringify(res));
-    goBack();
+    goBack(data);
   }
  
 }
@@ -137,7 +136,7 @@ const finishAdd = ()=>{
     </div> 
   </div>
     <div className="add-ques-ope">
-        <div className="common-btn" onClick={continueAdd}>继续添加</div>
+      {limit && <div className="common-btn" onClick={continueAdd}>继续添加</div>} 
         <div className="common-btn" onClick={finishAdd }>确定</div>
     </div> 
   </div>

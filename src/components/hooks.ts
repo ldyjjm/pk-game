@@ -3,6 +3,8 @@ import type { AppContext } from "@netless/window-manager";
 
 import { useEffect, useMemo, useState } from "react";
 
+export type MemberIDType = string;
+
 /**
  * @example
  * const writable = useWritable(context) // true
@@ -19,12 +21,6 @@ export function useWritable(context: AppContext) {
   return writable;
 }
 
-/**
- * @example
- * const [counterState, setCounterState] = useStorage(context, "counter", { count: 0 })
- * console.log(counterState) // { count: 0 }
- * setCounterState({ count: 2 })
- */
 export function useStorage<T>(
   context: AppContext,
   namespace: string,

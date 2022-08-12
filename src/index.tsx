@@ -9,25 +9,25 @@ import styles from "./style.css?inline";
  * Register it before joining room:
  * ```js
  * WindowManager.register({
- *   kind: "Counter",
- *   src: Counter
+ *   kind: "Quiz",
+ *   src: Quiz
  * })
  * ```
  * Then you can use it in your room:
  * ```js
- * manager.addApp({ kind: 'Counter' })
+ * manager.addApp({ kind: 'Quiz' })
  * ```
  * Read more about how to make a netless app here:
  * https://github.com/netless-io/window-manager/blob/master/docs/develop-app.md
  */
-const Counter: NetlessApp = {
-  kind: "Counter",
+const Quiz: NetlessApp = {
+  kind: "Quiz",
   setup(context) {
     const box = context.getBox();
     box.mountStyles(styles);
 
     const $content = document.createElement("div");
-    $content.className = "app-counter";
+    $content.className = "app-quiz";
     box.mountContent($content);
 
     const root = createRoot($content);
@@ -40,4 +40,4 @@ const Counter: NetlessApp = {
   },
 };
 
-export default Counter;
+export default Quiz;

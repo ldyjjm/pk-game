@@ -7,10 +7,11 @@ import { Result } from './Result';
 
 export interface QuestionProps {
   goBack:()=>void,
-  lists:any[]
+  lists:QuesItem[],
+  chooseAnswer:(param:number[])=>void
 }
 
-export const Question: FC<QuestionProps> = ({goBack,lists}) => {
+export const Question: FC<QuestionProps> = ({goBack,lists,chooseAnswer}) => {
   const [current,setCurrent] = useState<number>(0);
 
   const [active,setActive] = useState<boolean>(false);
@@ -18,8 +19,13 @@ export const Question: FC<QuestionProps> = ({goBack,lists}) => {
   const [currentAns,setCurrentAns] = useState<number>(-1);
  
   const [score,setScore] = useState<boolean[]>([]);
+  const [answerLists,setAnswerLists] = useState<number[]>([]);
+
   const handleChecked = (item:QuesItem,idx:number)=>{
     setActive(true);
+    const anLists = [...answerLists,idx]
+    setAnswerLists(anLists);
+    chooseAnswer(anLists);
     if(item.answer === idx){
       setScore([...score,true]);
     }else{

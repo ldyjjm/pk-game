@@ -21,4 +21,5 @@ export interface QuesItem {
     answer:number;
 }
 
+
 export const Clock:number = 3
