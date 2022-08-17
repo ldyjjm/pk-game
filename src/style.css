@@ -349,12 +349,20 @@ textarea:focus-visible {
   flex:1;
   border-right:1px solid #ddd;
   padding:8px;
+  width:55%;
 }
 .monitor-ans {
-  width:80px;
   padding:8px;
   text-align:center;
   white-space:nowrap;
+  width:15%;
+}
+.monitor-no-data {
+  width:100%;
+  text-align:center;
+  color:#ddd;
+  height: 70px;
+  line-height: 70px;
 }
 .bRight {
   border-right:1px solid #ddd;

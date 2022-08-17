@@ -6,12 +6,12 @@ import { convertOptions } from './utils';
 import { Result } from './Result';
 
 export interface QuestionProps {
-  goBack:()=>void,
+  
   lists:QuesItem[],
   chooseAnswer:(param:number[])=>void
 }
 
-export const Question: FC<QuestionProps> = ({goBack,lists,chooseAnswer}) => {
+export const Question: FC<QuestionProps> = ({lists,chooseAnswer}) => {
   const [current,setCurrent] = useState<number>(0);
 
   const [active,setActive] = useState<boolean>(false);
@@ -80,7 +80,7 @@ export const Question: FC<QuestionProps> = ({goBack,lists,chooseAnswer}) => {
             }
             </div>
         ):(
-        <Result lists={score} goBack={goBack} />
+        <Result lists={score}  />
         )
     }
   </div>

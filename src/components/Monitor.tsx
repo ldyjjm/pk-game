@@ -1,58 +1,95 @@
-import React,{ useEffect,useState } from "react";
+import React,{ useEffect,useState,useCallback } from "react";
 import { FC } from "react";
-
 import {
-  HomeTwoTone
+  CloseCircleTwoTone
 } from '@ant-design/icons';
-import { QuesItem } from './constant';
+import { QuesItem,StudentListsType,StudentType } from './constant';
 import { convertOptions } from './utils';
 
 export interface MonitorProps {
   goBack:()=>void,
   lists:QuesItem[],
-  anLists:number[]
+  anLists:StudentListsType
 }
 
 export const Monitor: FC<MonitorProps> = ({goBack,lists,anLists}) => {
-  const [score,setScore] = useState<number>(0);
+  
+  const [userLists,setUserLists] = useState<Array<StudentType>>([]);
   useEffect(()=>{
-    if(!!lists.length && !!anLists.length && (lists.length === anLists.length)){
+    if(Object.keys(anLists).length){
+      const res = [];
+      for(let val of Object.values(anLists)){
+        const selected = handleConversionAnswer(val) || '';
+        const rate = handleCorrectRate(val) || 0;
+        const temp = {...val,rate,selected}
+        res.push(temp);
+      }
+      setUserLists(res);
+    }
+  },[anLists])
+
+  const [correctAnswer,setCorrectAnswer] = useState<string>('');
+  useEffect(()=>{
+    if(lists?.length){
+      const res = lists.map(item=>convertOptions(item?.answer))
+      setCorrectAnswer(res.join(','))
+    }
+  },[lists])
+
+  const handleConversionAnswer = (item:StudentType)=>{
+    if(item?.answer?.length){
+      const res = item.answer.map(item=>convertOptions(item))
+      return (res.join(','))
+    }
+    return '';
+  }
+
+  const handleCorrectRate = (item:StudentType)=>{
+    if((item?.answer?.length === lists?.length)){
       let count = 0,len = lists.length;
-      lists.map((item,idx)=>{
-        if(item.answer === anLists[idx]){
+      item.answer.map((it,idx)=>{
+        if(it === lists[idx].answer){
             count += 1;
         }
       })
       const temp = Number((count/len)*100).toFixed(0);
-      setScore(Number(temp));
+      return temp;
     }
-  },[lists,anLists])
+    return 0;
+  }
+
   return (
   <div className="monitor-wrap">
    <div className="question-res-btn">
-        <HomeTwoTone onClick={goBack}/>
+        <CloseCircleTwoTone onClick={goBack} twoToneColor="#f00"/>
     </div> 
     <div className="monitor-table"> 
     <div className="monitor-table-item">
-        <div className="monitor-title">题目</div>
+        <div className="monitor-title">用户</div>
+        <div className="monitor-ans bRight">正确答案</div>
         <div className="monitor-ans  bRight">选择答案</div>
-        <div className="monitor-ans">正确答案</div>
+        <div className="monitor-ans">正确率</div>
     </div>
     {
-        lists && lists.length>0 && lists.map((item,idx)=>(
-            <div className="monitor-table-item" key={`${item.topic}-${idx}`}>
-             <div className="monitor-title">{idx+1}{'.'}{item.topic}</div>
-             <div className="monitor-ans bRight">{ anLists[idx]!==undefined? convertOptions(anLists[idx]):''}</div>
-             <div className="monitor-ans">{convertOptions(item.answer)}</div>
+        userLists?.length === 0 && (
+          <div className="monitor-table-item">
+            <div className="monitor-no-data">暂无数据</div>
+          </div>
+        )
+    }
+    {
+        userLists?.length>0 && userLists.map((item,idx)=>(
+            <div className="monitor-table-item" key={`${item.memberID}-${idx}`}>
+             <div className="monitor-title bRight">{item.memberID}</div>
+             <div className="monitor-ans bRight">{ correctAnswer }</div>
+             <div className="monitor-ans bRight">{item.selected}</div>
+             <div className="monitor-ans">
+              <span className="monitor-per">{item.rate}</span>
+              <span>%</span>
+              </div>
             </div>
         ))
     }
-    <div className="monitor-table-item-last">
-    <div className="monitor-title">
-        <span>正确率:</span>
-        <span className="monitor-per">{score}%</span>
-    </div>
-    </div>
     </div>
   </div>
   );

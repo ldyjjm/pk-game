@@ -1,3 +1,8 @@
+export interface TeacherStorage {
+  teacherID:string;
+}
+
+
 export enum ModeType {
     Default,
     Input,
@@ -23,3 +28,18 @@ export interface QuesItem {
 
 
 export const Clock:number = 3
+
+export interface StudentType {
+    memberID:string;
+    isShowLogin:boolean;
+    isShowWaiting:boolean;
+    answer:number[];
+  };
+  
+  export interface StudentListsType {
+    [key:string]:StudentType
+  };
+  
+  export type StudentStorage = {
+    studentIdLists:StudentListsType
+  };

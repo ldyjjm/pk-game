@@ -5,12 +5,12 @@ import { QuesItem,Clock } from './constant';
 import { Question } from './Question';
 
 export interface AnswerProps {
-  goBack:()=>void,
+  
   data:QuesItem[],
   handleChecked:(param:number[])=>void
 }
 
-export const Answer: FC<AnswerProps> = ({goBack,data,handleChecked}) => {
+export const Answer: FC<AnswerProps> = ({data,handleChecked}) => {
   const [lists,setLists] = useState<Array<QuesItem>>([]);
   useEffect(()=>{
     if(data.length){
@@ -44,7 +44,7 @@ export const Answer: FC<AnswerProps> = ({goBack,data,handleChecked}) => {
                   <div className="answer-clock-wrap">
                     <div className="answer-clock">{count}</div>
                   </div>):(
-                  <Question lists={lists} goBack={goBack} chooseAnswer={handleChecked}/>
+                  <Question lists={lists}  chooseAnswer={handleChecked}/>
                 )
               }
             </div>

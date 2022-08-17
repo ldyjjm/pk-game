@@ -1,22 +1,22 @@
 import React,{ useState,useEffect } from "react";
 import { FC } from "react";
 import {
-    HomeTwoTone
+    CloseCircleTwoTone
   } from '@ant-design/icons';
 import { Col, Row } from 'antd';
 
 
 export interface QuestionProps {
-  goBack:()=>void,
+ 
   lists:boolean[]
 }
 
-export const Result: FC<QuestionProps> = ({goBack,lists}) => {
+export const Result: FC<QuestionProps> = ({lists}) => {
   return (
     <div className="question-res-wrap">
-        <div className="question-res-btn">
-         <HomeTwoTone onClick={goBack}/>
-        </div>
+        {/* <div className="question-res-btn">
+         <CloseCircleTwoTone onClick={goBack} twoToneColor="#f00"/>
+        </div> */}
         <div className="question-res-header">
         作答详情
         </div>
